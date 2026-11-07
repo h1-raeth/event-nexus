@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Nexus — Next-Gen Event Discovery & Digital Pass Platform</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-[#06070d] dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white overflow-x-hidden transition-colors duration-500">
+
+  <!-- Ambient Aurora Mesh Background -->
+  <div class="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+    <div class="aurora-blob blob-1"></div>
+    <div class="aurora-blob blob-2"></div>
+    <div class="aurora-blob blob-3"></div>
+    <div class="bg-grid-pattern absolute inset-0 opacity-30 dark:opacity-20"></div>
+  </div>
+
+  <!-- Floating Glassmorphic Navbar -->
+  <header class="sticky top-4 z-40 max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="glass-nav rounded-2xl px-4 sm:px-6 h-16 flex items-center justify-between border border-slate-200/80 dark:border-white/10 shadow-xl shadow-indigo-950/5">
+      <!-- Event Nexus Custom Geometric SVG Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-500 to-fuchsia-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 group-hover:rotate-6 transition-transform">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 21 7 21 17 12 22 3 17 3 7 12 2"></polygon>
+            <circle cx="12" cy="12" r="3"></circle>
+            <line x1="12" y1="2" x2="12" y2="9"></line>
+            <line x1="21" y1="17" x2="14.6" y2="13.5"></line>
+            <line x1="3" y1="17" x2="9.4" y2="13.5"></line>
+          </svg>
+        </div>
+        <div>
+          <span class="font-display font-bold text-lg tracking-tight block leading-none">EVENT NEXUS</span>
+          <span class="text-[10px] font-mono uppercase tracking-widest text-indigo-500 dark:text-indigo-400">Experience Hub</span>
+        </div>
+      </a>
+
+      <!-- Center Navigation Pills -->
+      <nav class="hidden md:flex items-center gap-1 p-1 rounded-xl bg-slate-200/60 dark:bg-white/5 border border-slate-300/50 dark:border-white/5 text-xs font-semibold">
+        <a href="#spotlight" class="px-4 py-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition">Spotlight</a>
+        <a href="#explore" class="px-4 py-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition">Discover</a>
+        <a href="#register-section" class="px-4 py-2 rounded-lg hover:bg-white dark:hover:bg-white/10 transition">Quick RSVP</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2.5">
+        <!-- Saved Bookmarks Toggle -->
+        <button id="wishlist-filter-btn" title="View Saved Events" class="relative w-10 h-10 rounded-xl bg-white/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center hover:border-pink-500/50 transition">
+          <i class="fa-regular fa-heart text-pink-500"></i>
+          <span id="wishlist-badge" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-pink-500 text-white text-[10px] font-bold flex items-center justify-center">0</span>
+        </button>
+
+        <!-- Digital Wallet / My Passes Drawer Trigger -->
+        <button id="open-wallet-btn" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-indigo-500/25 flex items-center gap-2 transition transform active:scale-95">
+          <i class="fa-solid fa-qrcode"></i>
+          <span class="hidden sm:inline">My Passes</span>
+          <span id="ticket-count-badge" class="px-1.5 py-0.5 text-[11px] rounded-md bg-black/30 font-mono">0</span>
+        </button>
+
+        <!-- Theme Switcher -->
+        <button id="theme-toggle" aria-label="Switch Theme" class="w-10 h-10 rounded-xl bg-white/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center hover:border-indigo-500 transition">
+          <i id="theme-icon" class="fa-solid fa-sun text-amber-400"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="spotlight" class="scroll-mt-24 relative pt-12 pb-16 sm:pt-20 sm:pb-24 max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      <!-- Left Column: Hero Copy -->
+      <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-xs font-semibold">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+          </span>
+          EVENT NEXUS 2026 • CURATED CAMPUS & TECH EXPERIENCES
+        </div>
+
+        <h1 class="font-display text-4xl sm:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.06]">
+          Where Ambition Meets <span class="text-gradient">Unforgettable</span> Moments.
+        </h1>
+
+        <p class="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+          Explore high-voltage hackathons, immersive design bootcamps, indie starlight concerts, and founder arenas. Claim your privacy-shielded QR pass in under 15 seconds.
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+          <a href="#explore" class="group px-7 py-4 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-display font-bold text-sm shadow-xl hover:shadow-indigo-500/25 transition flex items-center gap-3">
+            Explore Lineup
+            <i class="fa-solid fa-arrow-up-right-from-square text-xs group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
+          </a>
+          <a href="#register-section" class="px-7 py-4 rounded-2xl glass-card font-display font-bold text-sm hover:border-indigo-500/50 transition flex items-center gap-2">
+            <i class="fa-solid fa-bolt text-amber-400"></i> Instant RSVP
+          </a>
+        </div>
+
+        <!-- Live Metrics Bar -->
+        <div class="pt-6 grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 border-t border-slate-200/80 dark:border-white/10">
+          <div>
+            <p class="font-display text-2xl sm:text-3xl font-extrabold">06</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Flagship Events</p>
+          </div>
+          <div>
+            <p class="font-display text-2xl sm:text-3xl font-extrabold text-indigo-500">3.4k+</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Passes Issued</p>
+          </div>
+          <div>
+            <p class="font-display text-2xl sm:text-3xl font-extrabold text-emerald-500">100%</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Zero-PII Gate Pass</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Featured Spotlight Bento Card -->
+      <div class="lg:col-span-5">
+        <div class="spotlight-card group relative rounded-3xl p-1 bg-gradient-to-b from-indigo-500/40 via-purple-500/20 to-transparent shadow-2xl">
+          <div class="rounded-[22px] bg-white dark:bg-[#0d0f1a] p-5 sm:p-6 space-y-5 relative overflow-hidden">
+            <div class="relative h-56 rounded-2xl overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1000&q=80" alt="Featured Summit" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-400 text-slate-950 shadow">
+                  <i class="fa-solid fa-crown mr-1"></i> Headliner
+                </span>
+                <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-black/60 text-white backdrop-blur-md">
+                  Technology
+                </span>
+              </div>
+              <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between text-white">
+                <div>
+                  <p class="text-xs text-indigo-300 font-mono">DEC 18, 2026 • MAIN AUDITORIUM</p>
+                  <h2 class="font-display text-xl font-bold leading-tight">Global AI & Cloud Architecture Summit</h2>
+                </div>
+              </div>
+            </div>
+
+            <!-- Live Hero Countdown -->
+            <div class="flex items-center justify-between gap-2 p-3 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/70 dark:border-white/10">
+              <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                <i class="fa-regular fa-clock text-indigo-500"></i> Starts In:
+              </span>
+              <div id="hero-countdown" data-countdown="2026-12-18T09:00:00" class="font-mono text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                --d : --h : --m : --s
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex -space-x-2">
+                <img class="w-8 h-8 rounded-full ring-2 ring-white dark:ring-slate-900" src="https://i.pravatar.cc/100?img=12" alt="Attendee" />
+                <img class="w-8 h-8 rounded-full ring-2 ring-white dark:ring-slate-900" src="https://i.pravatar.cc/100?img=32" alt="Attendee" />
+                <img class="w-8 h-8 rounded-full ring-2 ring-white dark:ring-slate-900" src="https://i.pravatar.cc/100?img=47" alt="Attendee" />
+                <span class="w-8 h-8 rounded-full ring-2 ring-white dark:ring-slate-900 bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center">+420</span>
+              </div>
+              <button onclick="openEventModal(1)" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-indigo-600/30">
+                Inspect & Claim Seat <i class="fa-solid fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Command Bar: Search, Filters & Sort -->
+  <section id="explore" class="scroll-mt-24 max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="glass-card rounded-3xl p-4 sm:p-6 border border-slate-200/80 dark:border-white/10 shadow-xl space-y-5">
+      <div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between">
+        <!-- Search Input with Keyboard Shortcut Hint -->
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search by event name, speaker, venue, or tech stack..."
+            class="w-full pl-11 pr-14 py-3.5 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:outline-none focus:border-indigo-500 text-sm transition"
+          />
+          <kbd class="hidden sm:inline-block absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-1 text-[10px] font-mono font-semibold bg-white dark:bg-white/10 text-slate-500 dark:text-slate-300 rounded-md border border-slate-200 dark:border-white/10">/</kbd>
+        </div>
+
+        <!-- Sort Dropdown -->
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2 bg-slate-100/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl px-3.5 py-2.5">
+            <i class="fa-solid fa-arrow-down-wide-short text-indigo-500 text-xs"></i>
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Sort:</span>
+            <select id="sort-select" class="bg-transparent text-xs font-bold focus:outline-none cursor-pointer">
+              <option value="date" class="dark:bg-slate-900">Soonest First</option>
+              <option value="seats" class="dark:bg-slate-900">Most Popular (Seats Left)</option>
+              <option value="title" class="dark:bg-slate-900">Alphabetical (A-Z)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Pills -->
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <div id="category-filters" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          <button data-category="All" class="filter-pill active px-4 py-2 rounded-xl text-xs font-bold transition shrink-0">
+            <i class="fa-solid fa-layer-group mr-1.5"></i>All Experiences
+          </button>
+          <button data-category="Technology" class="filter-pill px-4 py-2 rounded-xl text-xs font-bold transition shrink-0">
+            <i class="fa-solid fa-microchip mr-1.5"></i>Technology
+          </button>
+          <button data-category="Workshop" class="filter-pill px-4 py-2 rounded-xl text-xs font-bold transition shrink-0">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>Workshops
+          </button>
+          <button data-category="Cultural" class="filter-pill px-4 py-2 rounded-xl text-xs font-bold transition shrink-0">
+            <i class="fa-solid fa-music mr-1.5"></i>Cultural & Music
+          </button>
+          <button data-category="Business" class="filter-pill px-4 py-2 rounded-xl text-xs font-bold transition shrink-0">
+            <i class="fa-solid fa-rocket mr-1.5"></i>Startup & Pitch
+          </button>
+          <button data-category="Saved" class="filter-pill px-4 py-2 rounded-xl text-xs font-bold transition shrink-0">
+            <i class="fa-solid fa-heart text-pink-500 mr-1.5"></i>Saved Wishlist
+          </button>
+        </div>
+
+        <p id="results-counter" class="text-xs font-mono text-slate-500 dark:text-slate-400">Showing 6 experiences</p>
+      </div>
+    </div>
+
+    <!-- Interactive Spotlight Events Grid -->
+    <div id="events-grid" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+      <!-- Injected dynamically by app.js -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="hidden my-12 p-12 rounded-3xl glass-card text-center max-w-md mx-auto space-y-4">
+      <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mx-auto text-2xl">
+        <i class="fa-solid fa-compass-drafting"></i>
+      </div>
+      <h3 class="font-display text-xl font-bold">No matching experiences found</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400">Try clearing your search filter or switching back to All Experiences.</p>
+      <button id="reset-filters-btn" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold">Reset Filters</button>
+    </div>
+  </section>
+
+  <!-- Interactive Registration Studio + Privacy-Shielded Live Ticket Preview -->
+  <section id="register-section" class="scroll-mt-24 max-w-7xl mx-auto px-4 sm:px-6 py-16">
+    <div class="rounded-[32px] glass-card border border-slate-200/80 dark:border-white/10 p-6 sm:p-10 lg:p-12 shadow-2xl">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <!-- Left: Validated Registration Form -->
+        <div class="lg:col-span-7 space-y-6">
+          <div>
+            <span class="px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+              <i class="fa-solid fa-user-shield mr-1"></i> Privacy-Shielded Registration Portal
+            </span>
+            <h2 class="font-display text-3xl sm:text-4xl font-extrabold mt-3">Claim Your Nexus Pass</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Your email and phone number are validated for registration records only and remain hidden from your public gate pass.
+            </p>
+          </div>
+
+          <form id="registration-form" novalidate class="space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <!-- Participant Name -->
+              <div>
+                <label for="reg-name" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                  Participant Name *
+                </label>
+                <div class="relative">
+                  <i class="fa-regular fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                  <input
+                    type="text"
+                    id="reg-name"
+                    placeholder="e.g., Nandini Keshari"
+                    class="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:outline-none focus:border-indigo-500 text-sm transition"
+                  />
+                </div>
+                <p id="err-name" class="text-rose-500 text-xs mt-1.5 hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i>Enter at least 3 valid alphabetical characters.</p>
+              </div>
+
+              <!-- Email Address (Private Record Only) -->
+              <div>
+                <label for="reg-email" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                  Email Address *
+                </label>
+                <div class="relative">
+                  <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                  <input
+                    type="email"
+                    id="reg-email"
+                    placeholder="you@university.edu"
+                    class="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:outline-none focus:border-indigo-500 text-sm transition"
+                  />
+                </div>
+                <p id="err-email" class="text-rose-500 text-xs mt-1.5 hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i>Provide a valid email address.</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <!-- Phone Number (Private Record Only) -->
+              <div>
+                <label for="reg-phone" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                  Mobile Number *
+                </label>
+                <div class="relative">
+                  <i class="fa-solid fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                  <input
+                    type="tel"
+                    id="reg-phone"
+                    maxlength="10"
+                    placeholder="9876543210"
+                    class="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 focus:outline-none focus:border-indigo-500 text-sm font-mono transition"
+                  />
+                </div>
+                <p id="err-phone" class="text-rose-500 text-xs mt-1.5 hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i>Enter a valid 10-digit mobile number.</p>
+              </div>
+
+              <!-- Event Selection -->
+              <div>
+                <label for="reg-event" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                  Select Experience *
+                </label>
+                <select
+                  id="reg-event"
+                  class="w-full px-4 py-3.5 rounded-2xl bg-slate-100/80 dark:bg-slate-800 border border-slate-200 dark:border-white/10 focus:outline-none focus:border-indigo-500 text-sm transition text-slate-900 dark:text-slate-100"
+                >
+                  <option value="" class="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">-- Choose an Event --</option>
+                </select>
+                <p id="err-event" class="text-rose-500 text-xs mt-1.5 hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i>Please choose an event to generate your pass.</p>
+              </div>
+            </div>
+
+            <!-- Primary Submit Button -->
+            <button
+                type="submit"
+                id="mint-submit-btn"
+                class="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 hover:opacity-95 text-white font-display font-bold text-sm shadow-xl shadow-indigo-600/25 transition transform active:scale-[0.99] flex items-center justify-center gap-2"
+            >
+                <i class="fa-solid fa-fingerprint"></i> Mint Privacy-Protected Gate Pass
+            </button>
+
+            <!-- New Mint Another Pass Button (Hidden Initially) -->
+            <button
+                type="button"
+                id="mint-another-btn"
+                class="hidden w-full py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-display font-bold text-sm shadow-xl transition transform active:scale-[0.99] flex items-center justify-center gap-2"
+            >
+                <i class="fa-solid fa-rotate-right"></i> Mint Another Pass
+            </button>
+
+            <!-- Confirmation Message Box -->
+            <div id="form-success" class="hidden p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm flex items-center justify-between gap-4">
+              <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-circle-check text-lg"></i>
+                <span id="success-message">Registration confirmed!</span>
+              </div>
+              <button type="button" id="view-pass-inline" class="px-3 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs shrink-0">
+                Open Wallet
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right: Privacy-Shielded Live Boarding Pass Preview (Zero Email/Phone Exposed) -->
+        <div class="lg:col-span-5">
+          <div class="ticket-stub rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-7 shadow-2xl border border-white/15 relative overflow-hidden">
+            <div class="flex items-center justify-between border-b border-dashed border-white/20 pb-4">
+              <div>
+                <span class="text-[10px] font-mono uppercase tracking-widest text-indigo-400">EVENT NEXUS • VERIFIED GATE PASS</span>
+                <h3 id="preview-event" class="font-display font-bold text-lg leading-snug mt-0.5">Select an Experience...</h3>
+              </div>
+              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-400/30 font-mono text-[10px] text-emerald-300 shrink-0">
+                <i class="fa-solid fa-lock mr-1"></i>PII SHIELDED
+              </span>
+            </div>
+
+            <!-- Only Attendee Name, Venue & Schedule Shown on Gate Pass -->
+            <div class="py-5 grid grid-cols-2 gap-4 text-xs">
+              <div>
+                <p class="text-slate-400 uppercase text-[10px] font-mono">Attendee Holder</p>
+                <p id="preview-name" class="font-bold text-sm mt-0.5 truncate">Attendee Name</p>
+              </div>
+              <div>
+                <p class="text-slate-400 uppercase text-[10px] font-mono">Access Tier</p>
+                <p id="preview-category" class="font-mono font-bold text-sm text-amber-300 mt-0.5">ALL-ACCESS</p>
+              </div>
+              <div>
+                <p class="text-slate-400 uppercase text-[10px] font-mono">Venue Location</p>
+                <p id="preview-venue" class="font-semibold text-xs text-slate-200 mt-0.5 truncate">TBA Venue</p>
+              </div>
+              <div>
+                <p class="text-slate-400 uppercase text-[10px] font-mono">Schedule</p>
+                <p id="preview-date" class="font-mono text-xs text-slate-300 mt-0.5 truncate">Select Event</p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-dashed border-white/20 flex items-center justify-between gap-4">
+              <div>
+                <p class="text-[10px] font-mono text-slate-400">CRYPTOGRAPHIC GATE TOKEN</p>
+                <p id="preview-pass-id" class="font-mono font-bold text-sm text-indigo-400">ENX-2026-VERIFIED</p>
+                <p class="text-[11px] text-emerald-400 mt-1">
+                  <i class="fa-solid fa-eye-slash mr-1"></i>Contact Details Encrypted
+                </p>
+              </div>
+              <div class="p-2 bg-white rounded-xl">
+                <img
+                  id="preview-qr"
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=EVENT-NEXUS-VERIFIED-GATE-PASS"
+                  alt="Live QR Preview"
+                  class="w-16 h-16"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detailed Event Modal -->
+  <div id="event-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#0e1120] border border-slate-200 dark:border-white/10 rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl animate-modal-pop">
+      <div class="relative h-60 sm:h-72">
+        <img id="modal-image" src="" alt="Event Cover" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+        <button id="close-modal-btn" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="absolute bottom-4 left-6 right-6 flex items-end justify-between gap-4 text-white">
+          <div>
+            <span id="modal-category" class="px-3 py-1 rounded-full text-[11px] font-bold bg-indigo-600 uppercase tracking-wider"></span>
+            <h3 id="modal-title" class="font-display text-2xl sm:text-3xl font-extrabold mt-2"></h3>
+          </div>
+          <span id="modal-seats" class="px-3 py-1 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-mono font-bold shrink-0"></span>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 space-y-5">
+        <p id="modal-description" class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed"></p>
+
+        <div id="modal-tags" class="flex flex-wrap gap-2"></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/5">
+            <p class="text-slate-400 font-mono uppercase text-[10px]">Date & Time</p>
+            <p id="modal-date" class="font-bold mt-1"></p>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/5">
+            <p class="text-slate-400 font-mono uppercase text-[10px]">Location / Venue</p>
+            <p id="modal-venue" class="font-bold mt-1"></p>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/5">
+            <p class="text-slate-400 font-mono uppercase text-[10px]">Lead Speaker / Host</p>
+            <p id="modal-speaker" class="font-bold mt-1"></p>
+          </div>
+        </div>
+
+        <div class="pt-2 flex flex-col sm:flex-row justify-end gap-3">
+          <button id="modal-register-btn" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-display font-bold text-sm shadow-lg shadow-indigo-600/30 transition">
+            Reserve Seat for This Event <i class="fa-solid fa-arrow-right ml-1.5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Digital Pass Wallet Drawer (LocalStorage Manager) -->
+  <div id="wallet-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#0e1120] border border-slate-200 dark:border-white/10 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-5 animate-modal-pop">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
+            <i class="fa-solid fa-ticket text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-display text-xl font-bold">Event Nexus Pass Wallet</h3>
+            <p class="text-xs text-slate-500">Privacy-shielded gate passes • Stored locally on your device</p>
+          </div>
+        </div>
+        <button id="close-wallet-btn" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div id="tickets-list" class="space-y-4 max-h-[380px] overflow-y-auto pr-1"></div>
+
+      <div class="flex justify-between items-center pt-3 border-t border-slate-200 dark:border-white/10">
+        <button id="clear-tickets-btn" class="text-xs font-semibold text-rose-500 hover:underline">
+          <i class="fa-regular fa-trash-can mr-1"></i>Revoke All Passes
+        </button>
+        <button id="done-wallet-btn" class="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-3 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-2xl text-xs font-bold flex items-center gap-2.5">
+    <i class="fa-solid fa-bolt text-indigo-500"></i>
+    <span id="toast-text">Action completed</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200/80 dark:border-white/10 py-10 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <p>© 2026 <strong>EVENT NEXUS</strong> — Designed & Engineered with HTML5, Tailwind CSS & Vanilla ES6+.</p>
+      <div class="flex items-center gap-5">
+        <a href="#explore" class="hover:text-indigo-500 transition">Events</a>
+        <a href="#register-section" class="hover:text-indigo-500 transition">RSVP</a>
+        <a href="https://github.com" target="_blank" class="hover:text-indigo-500 transition"><i class="fa-brands fa-github text-base"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
