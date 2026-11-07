@@ -55,9 +55,9 @@
   <header class="sticky top-4 z-40 max-w-7xl mx-auto px-4 sm:px-6">
     <div class="glass-nav rounded-2xl px-4 sm:px-6 h-16 flex items-center justify-between border border-slate-200/80 dark:border-white/10 shadow-xl shadow-indigo-950/5">
       <!-- Event Nexus Custom Geometric SVG Logo -->
-      <a href="#" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-500 to-fuchsia-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 group-hover:rotate-6 transition-transform">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <a href="#" class="flex items-center gap-2 sm:gap-3 group min-w-0">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-500 to-fuchsia-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 group-hover:rotate-6 transition-transform shrink-0">
+          <svg class="w-4 h-4 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="12 2 21 7 21 17 12 22 3 17 3 7 12 2"></polygon>
             <circle cx="12" cy="12" r="3"></circle>
             <line x1="12" y1="2" x2="12" y2="9"></line>
@@ -65,9 +65,9 @@
             <line x1="3" y1="17" x2="9.4" y2="13.5"></line>
           </svg>
         </div>
-        <div>
-          <span class="font-display font-bold text-lg tracking-tight block leading-none">EVENT NEXUS</span>
-          <span class="text-[10px] font-mono uppercase tracking-widest text-indigo-500 dark:text-indigo-400">Experience Hub</span>
+        <div class="min-w-0">
+          <span class="font-display font-bold text-sm sm:text-lg tracking-tight block leading-none truncate">EVENT NEXUS</span>
+          <span class="text-[8px] sm:text-[10px] font-mono uppercase tracking-widest text-indigo-500 dark:text-indigo-400 block truncate">Experience Hub</span>
         </div>
       </a>
 
@@ -79,7 +79,7 @@
       </nav>
 
       <!-- Action Buttons -->
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         <!-- Saved Bookmarks Toggle -->
         <button id="wishlist-filter-btn" title="View Saved Events" class="relative w-10 h-10 rounded-xl bg-white/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center hover:border-pink-500/50 transition">
           <i class="fa-regular fa-heart text-pink-500"></i>
@@ -542,6 +542,6 @@
     </div>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="event-nexus-app.js"></script>
 </body>
 </html>
